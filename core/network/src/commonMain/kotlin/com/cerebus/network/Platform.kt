@@ -1,3 +1,3 @@
-package com.cerebus.core
+package com.cerebus.network
 
 expect fun platform(): String

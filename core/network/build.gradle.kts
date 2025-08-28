@@ -65,7 +65,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.cerebus.core"
+    namespace = "com.cerebus.network"
     compileSdk = 36
 
     defaultConfig {
