@@ -1,4 +1,4 @@
-package org.company.app
+package com.cerebus.tutube
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button

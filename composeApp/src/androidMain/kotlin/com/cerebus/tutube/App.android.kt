@@ -1,4 +1,4 @@
-package org.company.app
+package com.cerebus.tutube
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

@@ -1,4 +1,4 @@
-package org.company.app.theme
+package com.cerebus.tutube.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

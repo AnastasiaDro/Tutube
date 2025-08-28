@@ -1,4 +1,4 @@
-package org.company.app.theme
+package com.cerebus.tutube.theme
 
 import android.app.Activity
 import androidx.compose.runtime.Composable

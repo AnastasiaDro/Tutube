@@ -1,4 +1,4 @@
-package org.company.app
+package com.cerebus.tutube
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
@@ -12,9 +12,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import multiplatform_app.composeapp.generated.resources.*
-import org.company.app.theme.AppTheme
-import org.company.app.theme.LocalThemeIsDark
+import com.cerebus.tutube.theme.AppTheme
+import com.cerebus.tutube.theme.LocalThemeIsDark
+import tutube.composeapp.generated.resources.*
 import kotlinx.coroutines.isActive
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource

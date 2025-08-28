@@ -77,14 +77,14 @@ kotlin {
 }
 
 android {
-    namespace = "org.company.app"
+    namespace = "com.cerebus.tutube"
     compileSdk = 36
 
     defaultConfig {
         minSdk = 21
         targetSdk = 36
 
-        applicationId = "org.company.app.androidApp"
+        applicationId = "com.cerebus.tutube.androidApp"
         versionCode = 1
         versionName = "1.0.0"
 

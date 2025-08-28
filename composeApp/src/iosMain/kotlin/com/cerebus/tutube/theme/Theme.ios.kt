@@ -1,4 +1,4 @@
-package org.company.app.theme
+package com.cerebus.tutube.theme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
