@@ -12,6 +12,8 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
+import com.cerebus.tutube.navigation.Screens
 import com.cerebus.tutube.theme.AppTheme
 import com.cerebus.tutube.theme.LocalThemeIsDark
 import tutube.composeapp.generated.resources.*
@@ -20,10 +22,32 @@ import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+
+@Composable
+fun TutubeAppNavigation() = AppTheme {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = Screens.HOME.route) {
+        composable(Screens.HOME.route) {
+            HomeScreen(onNavigateToProfile = {
+                navController.navigate(Screens.REGISTRATION.route)
+            })
+        }
+//        composable(Screens.REGISTRATION.route) {
+//            ProfileScreen(onNavigateBack = {
+//                navController.popBackStack()
+//            })
+//        }
+    }
+}
+
 
 @Preview
 @Composable
-internal fun App() = AppTheme {
+internal fun HomeScreen(onNavigateToProfile: () -> Unit) = AppTheme {
     Column(
         modifier = Modifier
             .fillMaxSize()

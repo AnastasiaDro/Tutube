@@ -64,6 +64,7 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 
+
 [plugins]
 multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 androidkmp = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
