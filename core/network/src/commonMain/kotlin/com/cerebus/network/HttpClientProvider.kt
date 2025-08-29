@@ -7,8 +7,13 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-object NetworkProvider {
-    val httpClient = createHttpClient()
+interface HttpClientProvider {
+    fun getClient(): HttpClient
+}
+
+class KtorHttpClientProvider : HttpClientProvider {
+    private val client = createHttpClient()
+    override fun getClient() = client
 }
 
 expect fun createHttpClient(): HttpClient

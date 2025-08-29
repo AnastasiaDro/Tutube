@@ -1,10 +1,16 @@
-package com.cerebus.network.userData
+package com.cerebus.network.impl
 
+import com.cerebus.network.api.UserApi
+import com.cerebus.network.userData.CreateUserDto
+import com.cerebus.network.userData.UserDto
 import io.ktor.client.HttpClient
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 
 class UserApiImpl(
     private val client: HttpClient,

@@ -1,10 +1,14 @@
 plugins {
     alias(libs.plugins.multiplatform)
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.androidkmp)
 }
 
 kotlin {
-    androidTarget()
+
+    androidLibrary {
+        namespace = "com.cerebus.network"
+        compileSdk = 36
+    }
 
     val xcfName = "coreKit"
 
@@ -62,15 +66,4 @@ kotlin {
         }
     }
 
-}
-
-android {
-    namespace = "com.cerebus.network"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 29
-        targetSdk = 36
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
 }

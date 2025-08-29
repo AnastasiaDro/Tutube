@@ -1,4 +1,7 @@
-package com.cerebus.network.userData
+package com.cerebus.network.api
+
+import com.cerebus.network.userData.CreateUserDto
+import com.cerebus.network.userData.UserDto
 
 interface UserApi {
 

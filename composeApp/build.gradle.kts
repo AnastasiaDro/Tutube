@@ -47,6 +47,19 @@ kotlin {
             implementation(libs.multiplatformSettings)
             implementation(libs.room.runtime)
             implementation(libs.materialKolor)
+            implementation(libs.koin.core)
+            implementation(project(":core:network"))
+        }
+
+        androidMain.dependencies {
+            implementation(compose.uiTooling)
+            implementation(libs.androidx.activityCompose)
+            implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.koin.android)
+        }
+
+        iosMain.dependencies {
+
         }
 
         commonTest.dependencies {
@@ -55,18 +68,6 @@ kotlin {
             implementation(compose.uiTest)
             implementation(libs.kotlinx.coroutines.test)
         }
-
-        androidMain.dependencies {
-            implementation(compose.uiTooling)
-            implementation(libs.androidx.activityCompose)
-            implementation(libs.kotlinx.coroutines.android)
-
-        }
-
-        iosMain.dependencies {
-
-        }
-
     }
 }
 
