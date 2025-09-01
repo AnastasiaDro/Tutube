@@ -26,8 +26,11 @@ class UserRepositoryImpl(private val storage: UserStorage) : UserRepository {
     override fun authorizeUser(
         email: String,
         pass: String
-    ): Flow<User> {
-        TODO("Not yet implemented")
+    ): Flow<User> = flow {
+        val token = storage.loginUser(email, pass)
+        //сохраняем токен
+        val data = storage.getUserByToken(token)
+        emit(userDtoToUser(data))
     }
 
     override fun fillUser(): Flow<User> {

@@ -11,7 +11,7 @@ interface UserApi {
 
     suspend fun fillUser(userData: UserDto): UserDto
 
-    suspend fun loginUser(login: String, pass: String): UserDto
+    suspend fun loginUser(login: String, pass: String): String
 
     //public static class LoginRequest {
     //    private String email;    private String password;

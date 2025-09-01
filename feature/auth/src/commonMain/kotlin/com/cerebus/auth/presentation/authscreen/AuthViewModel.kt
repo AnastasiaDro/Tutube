@@ -2,8 +2,8 @@ package com.cerebus.auth.presentation.authscreen
 
 import androidx.lifecycle.viewModelScope
 import com.cerebus.auth.domain.usecases.AuthorizeUserUseCase
+import com.cerebus.auth.domain.usecases.RegisterUserUseCase
 import com.cerebus.auth.presentation.api.BaseViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -12,22 +12,48 @@ import kotlinx.coroutines.launch
 class AuthViewModel(
     private val navigator: AuthScreenNavigator,
     private val authorizeUserUseCase: AuthorizeUserUseCase,
+    private val registerUserUseCase: RegisterUserUseCase,
 ) : BaseViewModel(), AuthInteractions {
-    private val _uiState = MutableStateFlow<String>("I am user")
-    val uiState: StateFlow<String> = _uiState
+
+    private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.SelectWay)
+    val uiState: StateFlow<AuthUiState> = _uiState
 
     override fun loadUser() {
         viewModelScope.launch {
-            delay(1000)
-            _uiState.emit("I am user 1")
+           // delay(1000)
+            _uiState.emit(AuthUiState.Error("Tmp error"))
         }
     }
 
     override fun onLogin(login: String, pass: String) {
-        authorizeUserUseCase.execute(login, pass)
+        viewModelScope.launch {
+            authorizeUserUseCase.execute(login, pass).collect {
+                _uiState.emit(AuthUiState.SuccessAuthorization("Успешный вход!"))
+            }
+        }
+    }
+
+    override fun onRegister(login: String, pass: String) {
+        viewModelScope.launch {
+            registerUserUseCase.execute(login, pass).collect {
+                _uiState.emit(AuthUiState.SuccessRegistration("Успешная регистрация!"))
+            }
+        }
     }
 
     override fun onBackPressed() {
         navigator.goBack()
+    }
+
+    override fun selectLogin() {
+        viewModelScope.launch {
+            _uiState.emit(AuthUiState.Authorization)
+        }
+    }
+
+    override fun selectRegister() {
+        viewModelScope.launch {
+            _uiState.emit(AuthUiState.Registration)
+        }
     }
 }

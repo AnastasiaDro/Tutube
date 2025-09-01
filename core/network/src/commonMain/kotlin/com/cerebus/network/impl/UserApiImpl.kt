@@ -12,6 +12,7 @@ import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlinx.coroutines.delay
 
 class UserApiImpl(
     clientProvider: HttpClientProvider,
@@ -30,7 +31,8 @@ class UserApiImpl(
     //}
 
     override suspend fun registerUser(createUserData: CreateUserDto): String {
-        TODO("Not yet implemented")
+        delay(100)
+        return "MY TMP TOKEN REGISTER"
     }
 
     override suspend fun fillUser(userData: UserDto): UserDto {
@@ -43,8 +45,9 @@ class UserApiImpl(
     override suspend fun loginUser(
         login: String,
         pass: String
-    ): UserDto {
-        TODO("Not yet implemented")
+    ): String {
+       delay(100)
+        return "MY TMP TOKEN LOGIN"
     }
 
 

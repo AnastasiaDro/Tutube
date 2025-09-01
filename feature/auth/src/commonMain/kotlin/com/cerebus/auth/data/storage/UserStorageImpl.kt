@@ -20,7 +20,7 @@ class UserStorageImpl(private val userApi: UserApi) : UserStorage {
     override suspend fun loginUser(
         login: String,
         pass: String
-    ): UserDto {
+    ): String {
         return userApi.loginUser(login, pass)
     }
 

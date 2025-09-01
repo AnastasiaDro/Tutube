@@ -11,5 +11,5 @@ interface UserStorage {
 
     suspend fun fillUser(userData: UserDto): UserDto
 
-    suspend fun loginUser(login: String, pass: String): UserDto
+    suspend fun loginUser(login: String, pass: String): String
 }
