@@ -2,6 +2,8 @@ package com.cerebus.network.impl
 
 import com.cerebus.network.HttpClientProvider
 import com.cerebus.network.api.UserApi
+import com.cerebus.network.userData.AuthRequest
+import com.cerebus.network.userData.AuthResponse
 import com.cerebus.network.userData.CreateUserDto
 import com.cerebus.network.userData.UserDto
 import io.ktor.client.HttpClient
@@ -18,8 +20,13 @@ class UserApiImpl(
     clientProvider: HttpClientProvider,
 ) : UserApi {
     private val client: HttpClient = clientProvider.getClient()
-    override suspend fun getUserByToken(id: String): UserDto {
-        return client.get("$BASE_URL/$id").body()
+    override suspend fun getUserByToken(id: String): UserDto? {
+        try {
+            return client.get("$BASE_URL/$id").body()
+        } catch (e: Exception) {
+            println(e.message)
+            return null
+        }
     }
 
    // override suspend fun registerUser(createUserData: CreateUserDto): String {
@@ -45,13 +52,20 @@ class UserApiImpl(
     override suspend fun loginUser(
         login: String,
         pass: String
-    ): String {
-       delay(100)
-        return "MY TMP TOKEN LOGIN"
+    ): AuthResponse? {
+        return try {
+            client.post("$BASE_URL/auth") {
+                contentType(ContentType.Application.Json)
+                setBody(AuthRequest(login, pass))
+            }.body()
+        } catch (e: Exception) {
+            println("Ошибка сети: ${e.message}")
+            null
+        }
     }
 
 
     companion object {
-        private const val BASE_URL = "http://51.250.46.61:8085/api/users"
+        private const val BASE_URL = "http://84.201.170.110:8085/api/users"
     }
 }

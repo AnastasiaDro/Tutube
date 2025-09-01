@@ -29,3 +29,16 @@ data class UserDto(
     val successRate: Int? = null,
     val tryingTimes: Int? = null,
 ) : ResponsesDto()
+
+@Serializable
+data class AuthResponse(
+    val message: String,
+    val success: Boolean,
+    val token: String?
+)
+
+@Serializable
+data class AuthRequest(
+    val username: String,
+    val password: String
+)

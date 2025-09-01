@@ -9,28 +9,26 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class UserRepositoryImpl(private val storage: UserStorage) : UserRepository {
-    override fun getUser(token: String): Flow<User> = flow {
+
+    override suspend fun getUserByToken(token: String): User? {
         val data = storage.getUserByToken(token)
-        emit(userDtoToUser(data))
+        return data?.let { userDtoToUser(it) }
     }
 
-    override fun registerUser(
+    override suspend fun registerUser(
         email: String,
         pass: String
-    ): Flow<Boolean> = flow {
+    ): String  {
         val token = storage.registerUser(CreateUserDto(email, pass))
-        //здест сохраняем токен, в зависимости от успеха возвращаем
-        emit(true)
+        return token
     }
 
-    override fun authorizeUser(
+    override suspend fun authorizeUser(
         email: String,
         pass: String
-    ): Flow<User> = flow {
+    ): String {
         val token = storage.loginUser(email, pass)
-        //сохраняем токен
-        val data = storage.getUserByToken(token)
-        emit(userDtoToUser(data))
+        return token
     }
 
     override fun fillUser(): Flow<User> {

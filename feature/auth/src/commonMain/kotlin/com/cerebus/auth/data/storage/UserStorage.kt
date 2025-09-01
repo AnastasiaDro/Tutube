@@ -5,7 +5,7 @@ import com.cerebus.network.userData.UserDto
 
 interface UserStorage {
 
-    suspend fun getUserByToken(token: String): UserDto
+    suspend fun getUserByToken(token: String): UserDto?
 
     suspend fun registerUser(createUserData: CreateUserDto): String
 

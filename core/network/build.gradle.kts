@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.multiplatform)
     alias(libs.plugins.androidkmp)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
