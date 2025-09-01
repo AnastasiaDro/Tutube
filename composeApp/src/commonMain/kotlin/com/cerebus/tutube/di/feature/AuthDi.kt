@@ -1,9 +1,32 @@
 package com.cerebus.tutube.di.feature
 
+import com.cerebus.auth.data.UserRepositoryImpl
+import com.cerebus.auth.data.storage.UserStorage
+import com.cerebus.auth.data.storage.UserStorageImpl
+import com.cerebus.auth.domain.repository.UserRepository
+import com.cerebus.auth.domain.usecases.AuthorizeUserUseCase
+import com.cerebus.auth.presentation.authscreen.AuthScreenNavigator
 import com.cerebus.auth.presentation.authscreen.AuthViewModel
 import  org.koin.core.module.dsl.*
 import org.koin.dsl.module
 
 val authModule = module {
-    viewModel { AuthViewModel() }
+    //ViewModels
+    viewModel { (navigator: AuthScreenNavigator) -> AuthViewModel(navigator, get()) }
+
+    /** Domain **/
+    /** UseCases **/
+    factory<AuthorizeUserUseCase> {
+        AuthorizeUserUseCase(userRepository = get())
+    }
+    /** Data **/
+    /** Repositories **/
+    single<UserRepository> {
+        UserRepositoryImpl(storage = get())
+    }
+    /** Storages **/
+    single<UserStorage> {
+        UserStorageImpl(userApi = get())
+    }
+
 }

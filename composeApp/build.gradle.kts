@@ -52,7 +52,6 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.koin.compose)
             implementation(libs.compose.back)
-            implementation(libs.compose.icons)
             implementation(project(":core:network"))
             implementation(project(":feature:auth"))
 

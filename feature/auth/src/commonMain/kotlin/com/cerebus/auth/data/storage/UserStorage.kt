@@ -1,19 +1,15 @@
-package com.cerebus.network.api
+package com.cerebus.auth.data.storage
 
 import com.cerebus.network.userData.CreateUserDto
 import com.cerebus.network.userData.UserDto
 
-interface UserApi {
+interface UserStorage {
 
-    suspend fun getUserByToken(id: String): UserDto
+    suspend fun getUserByToken(token: String): UserDto
 
     suspend fun registerUser(createUserData: CreateUserDto): String
 
     suspend fun fillUser(userData: UserDto): UserDto
 
     suspend fun loginUser(login: String, pass: String): UserDto
-
-    //public static class LoginRequest {
-    //    private String email;    private String password;
-    //}
 }
