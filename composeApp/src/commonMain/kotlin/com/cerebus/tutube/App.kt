@@ -2,11 +2,17 @@ package com.cerebus.tutube
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.backhandler.PredictiveBackHandler
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalUriHandler
@@ -24,23 +30,38 @@ import org.jetbrains.compose.resources.vectorResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import com.cerebus.auth.presentation.authscreen.AuthScreenWrapper
 
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun TutubeAppNavigation() = AppTheme {
     val navController = rememberNavController()
 
+
     NavHost(navController = navController, startDestination = Screens.HOME.route) {
+
         composable(Screens.HOME.route) {
             HomeScreen(onNavigateToProfile = {
-                navController.navigate(Screens.REGISTRATION.route)
+                navController.navigate(Screens.AUTHORIZATION.route)
             })
         }
-//        composable(Screens.REGISTRATION.route) {
-//            ProfileScreen(onNavigateBack = {
-//                navController.popBackStack()
-//            })
-//        }
+        composable(Screens.AUTHORIZATION.route) {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        modifier = Modifier.windowInsetsPadding(WindowInsets.statusBars),
+                        title = { Text("Авторизация") },
+                        navigationIcon = {
+                            IconButton(
+                                onClick = { navController.navigateUp() },
+                            ) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Go back") }
+                        },
+                    )
+                },
+
+                content = { AuthScreenWrapper() }
+            )
+        }
     }
 }
 
@@ -58,7 +79,8 @@ internal fun HomeScreen(onNavigateToProfile: () -> Unit) = AppTheme {
         Text(
             text = stringResource(Res.string.cyclone),
             fontFamily = FontFamily(Font(Res.font.IndieFlower_Regular)),
-            style = MaterialTheme.typography.displayLarge
+            style = MaterialTheme.typography.displayLarge,
+            modifier = Modifier.clickable { onNavigateToProfile() }
         )
 
         var isRotating by remember { mutableStateOf(false) }

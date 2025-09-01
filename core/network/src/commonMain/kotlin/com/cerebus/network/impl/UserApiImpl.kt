@@ -35,6 +35,6 @@ class UserApiImpl(
     }
 
     companion object {
-        private const val BASE_URL = "https://example.com/api/users"
+        private const val BASE_URL = "http://51.250.46.61:8085/api/users"
     }
 }

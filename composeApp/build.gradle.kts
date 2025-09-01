@@ -31,6 +31,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            //TODO remove compose dependencies after screens creating
             implementation(compose.runtime)
             implementation(compose.ui)
             implementation(compose.foundation)
@@ -48,7 +49,13 @@ kotlin {
             implementation(libs.room.runtime)
             implementation(libs.materialKolor)
             implementation(libs.koin.core)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.compose)
+            implementation(libs.compose.back)
+            implementation(libs.compose.icons)
             implementation(project(":core:network"))
+            implementation(project(":feature:auth"))
+
         }
 
         androidMain.dependencies {
@@ -56,6 +63,7 @@ kotlin {
             implementation(libs.androidx.activityCompose)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.koin.android)
+            implementation(libs.koin.android.compose)
         }
 
         iosMain.dependencies {

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
+        android:name=".MyApp"
         android:icon="@mipmap/ic_launcher"
         android:label="Tutube"
         android:theme="@android:style/Theme.Material.NoActionBar">
