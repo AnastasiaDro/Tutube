@@ -3,15 +3,20 @@ package com.cerebus.auth.presentation.authscreen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
@@ -24,6 +29,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -35,6 +41,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -82,10 +89,9 @@ public fun AuthScreen(state: AuthUiState, interactions: AuthInteractions) {
             )
         },
         content = {
+            AuthFields(interactions)
             when (state) {
-                AuthUiState.SelectWay -> SelectWay(interactions)
-                AuthUiState.Authorization -> AuthFields("Войти", interactions::onLogin)
-                AuthUiState.Registration -> AuthFields("Зарегистрироваться", interactions::onRegister)
+                is AuthUiState.Authorization -> {  }
                 is AuthUiState.SuccessRegistration -> scope.launch {
                     snackbarHostState.showSnackbar(
                         message = state.message,
@@ -98,11 +104,13 @@ public fun AuthScreen(state: AuthUiState, interactions: AuthInteractions) {
                         actionLabel = "OK"
                     )
                 }
-                is AuthUiState.Error -> scope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = state.message,
-                        actionLabel = "OK"
-                    )
+                is AuthUiState.Error -> {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = state.message,
+                            actionLabel = "OK"
+                        )
+                    }
                 }
             }
         }
@@ -110,58 +118,37 @@ public fun AuthScreen(state: AuthUiState, interactions: AuthInteractions) {
 }
 
 @Composable
-fun SelectWay(interactions: AuthInteractions) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeDrawing),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            ElevatedButton(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                    .widthIn(min = 200.dp),
-                onClick = { interactions.selectLogin() },
-                content = {
-                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null)
-                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text("Войти")
-                }
-            )
-            ElevatedButton(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                    .widthIn(min = 200.dp),
-                onClick = { interactions.selectRegister() },
-                content = {
-                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null)
-                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text("Зарегистрироваться")
-                }
-            )
-        }
-    }
-}
+fun AuthFields(interactions: AuthInteractions) {
 
-@Composable
-fun AuthFields(buttonText: String, buttonAction: (login: String, pass: String) -> Unit) {
     Box(modifier = Modifier
         .fillMaxSize()
         .windowInsetsPadding(WindowInsets.safeDrawing),
         contentAlignment = Alignment.Center
     ) {
         Column(
+            modifier = Modifier
+                .padding(horizontal = 12.dp), // сделать скроллируемым, чтобы при необходимости подняться // ← контролирует IME через nested scroll
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             var textLogin by remember { mutableStateOf("") }
             var textPass by remember { mutableStateOf("") }
+            var checked by remember { mutableStateOf(false) }
+
+            val buttonAction: (String, String) -> Unit
+            val buttonText: String
+            val switchDesc = "Регистрация"
+
+            if (checked) {
+                buttonAction = interactions::onRegister
+                buttonText = "Зарегистрироваться"
+            } else {
+                buttonAction = interactions::onLogin
+                buttonText = "Войти"
+            }
 
             OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 value = textLogin,
                 onValueChange = { newText -> textLogin = newText },
@@ -171,6 +158,7 @@ fun AuthFields(buttonText: String, buttonAction: (login: String, pass: String) -
             )
 
             OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 value = textPass,
                 onValueChange = { newText -> textPass = newText },
@@ -178,10 +166,21 @@ fun AuthFields(buttonText: String, buttonAction: (login: String, pass: String) -
                 placeholder = { Text("Введите пароль") }
             )
 
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = switchDesc)
+                Switch(
+                    checked = checked,
+                    onCheckedChange = { checked = it }
+                )
+            }
             ElevatedButton(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                    .widthIn(min = 200.dp),
+                    .fillMaxWidth(),
                 onClick = { buttonAction.invoke(textLogin, textPass) },
                 content = {
                     Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null)

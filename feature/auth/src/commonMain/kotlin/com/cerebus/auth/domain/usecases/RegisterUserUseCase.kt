@@ -5,10 +5,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class RegisterUserUseCase(private val userRepository: UserRepository) {
-
     fun execute(login: String, pass: String): Flow<Boolean> = flow {
         val token = userRepository.registerUser(login, pass)
+        val result = token != null && token.isNotBlank()
          //сохранить токен
-        emit(true)
+        emit(result)
     }
 }

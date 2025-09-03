@@ -9,44 +9,62 @@ import com.cerebus.network.userData.UserDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.coroutines.delay
+import kotlinx.serialization.json.Json
 
 class UserApiImpl(
     clientProvider: HttpClientProvider,
 ) : UserApi {
     private val client: HttpClient = clientProvider.getClient()
-    override suspend fun getUserByToken(id: String): UserDto? {
+    //кладу userName в api/users/кладу сюда userName и в header кладу бэрор токен
+    override suspend fun getUserByToken(token: String, userName: String): UserDto? {
         try {
-            return client.get("$BASE_URL/$id").body()
+            val test = client.get("$BASE_URL/$token"){
+                contentType(ContentType.Application.Json)
+                header(AUTH_HEADER, "$AUTH_BEARER $token")
+                setBody(mapOf("userName" to userName))
+            }.bodyAsText()
+            println("Настя получила юзера: $test")
+            return null
         } catch (e: Exception) {
             println(e.message)
             return null
         }
+        //уже созданный userNAme!! обязательное поле
     }
 
-   // override suspend fun registerUser(createUserData: CreateUserDto): String {
-//        return client.post(BASE_URL) {
-//            contentType(ContentType.Application.Json)
-//            setBody(createUserData)
-//        }.body()
-        //TODO not implemented()
-    //}
 
-    override suspend fun registerUser(createUserData: CreateUserDto): String {
-        delay(100)
-        return "MY TMP TOKEN REGISTER"
+    override suspend fun registerUser(createUserData: CreateUserDto): AuthResponse? {
+        return try {
+            client.post("$BASE_URL/auth/register") {
+                contentType(ContentType.Application.Json)
+                setBody(createUserData)
+            }.body()
+        } catch (e: Exception) {
+            println("Ошибка при регистрации: ${e.message}")
+            return null
+        }
     }
 
-    override suspend fun fillUser(userData: UserDto): UserDto {
-        return client.put(BASE_URL) {
-            contentType(ContentType.Application.Json)
-            setBody(userData)
-        }.body()
+
+    override suspend fun fillUser(token: String, userData: UserDto): UserDto? {
+        return try {
+            return client.put("$BASE_URL/users") {
+                contentType(ContentType.Application.Json)
+                header(AUTH_HEADER, "$AUTH_BEARER $token")
+                setBody(userData)
+            }.body()
+        } catch (e: Exception) {
+            println("Ошибка при обновлении пользователя: ${e.message}")
+            null
+        }
     }
 
     override suspend fun loginUser(
@@ -54,18 +72,20 @@ class UserApiImpl(
         pass: String
     ): AuthResponse? {
         return try {
-            client.post("$BASE_URL/auth") {
+            return client.post("$BASE_URL/auth/login") {
                 contentType(ContentType.Application.Json)
                 setBody(AuthRequest(login, pass))
             }.body()
         } catch (e: Exception) {
-            println("Ошибка сети: ${e.message}")
+            e.printStackTrace()
             null
         }
     }
 
 
     companion object {
-        private const val BASE_URL = "http://84.201.170.110:8085/api/users"
+        private const val BASE_URL = "http://84.201.150.195:8085/api"
+        private const val AUTH_HEADER = "Authorization"
+        private const val AUTH_BEARER = "Bearer"
     }
 }

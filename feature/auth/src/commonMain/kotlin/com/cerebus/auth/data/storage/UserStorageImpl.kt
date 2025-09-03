@@ -5,25 +5,27 @@ import com.cerebus.network.userData.CreateUserDto
 import com.cerebus.network.userData.UserDto
 
 class UserStorageImpl(private val userApi: UserApi) : UserStorage {
-    override suspend fun getUserByToken(token: String): UserDto? {
-        return userApi.getUserByToken(token)
+    override suspend fun getUserByToken(token: String, userName: String): UserDto? {
+        return userApi.getUserByToken(token, userName)
     }
 
-    override suspend fun registerUser(createUserData: CreateUserDto): String {
-        return userApi.registerUser(createUserData)
+    override suspend fun registerUser(createUserData: CreateUserDto): String? {
+        val answer = userApi.registerUser(createUserData)
+
+        return answer?.token
     }
 
-    override suspend fun fillUser(userData: UserDto): UserDto {
-        return userApi.fillUser(userData)
+    override suspend fun fillUser(token: String, userData: UserDto): UserDto? {
+        return userApi.fillUser(token, userData)
     }
 
     override suspend fun loginUser(
         login: String,
         pass: String
-    ): String {
+    ): String? {
         val answer = userApi.loginUser(login, pass)
 
-        return answer?.token ?: ""
+        return answer?.token
     }
 
 

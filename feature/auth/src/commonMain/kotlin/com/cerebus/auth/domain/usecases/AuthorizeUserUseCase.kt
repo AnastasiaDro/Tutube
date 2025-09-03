@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.flow
 
 class AuthorizeUserUseCase(private val userRepository: UserRepository) {
 
-    fun execute(login: String, pass: String): Flow<User?> = flow {
-        val token = userRepository.authorizeUser(login, pass)
+    fun execute(): Flow<User?> = flow {
+
         val user = userRepository.getUserByToken(token)
         emit(user)
     }

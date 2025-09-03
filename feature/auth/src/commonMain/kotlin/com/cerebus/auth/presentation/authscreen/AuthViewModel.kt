@@ -6,6 +6,7 @@ import com.cerebus.auth.domain.usecases.AuthorizeUserUseCase
 import com.cerebus.auth.domain.usecases.RegisterUserUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -17,21 +18,27 @@ class AuthViewModel(
     private val registerUserUseCase: RegisterUserUseCase,
 ) : ViewModel(), AuthInteractions {
 
-    private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.SelectWay)
+    private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Authorization)
     val uiState: StateFlow<AuthUiState> = _uiState
 
     override fun loadUser() {
         viewModelScope.launch {
-           // delay(1000)
+            delay(1000)
             _uiState.emit(AuthUiState.Error("Tmp error"))
         }
     }
 
     override fun onLogin(login: String, pass: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            authorizeUserUseCase.execute(login, pass).collect {
+            authorizeUserUseCase.execute(login, pass).collect { user ->
                 //TODO обработка пустого user-а
-                _uiState.emit(AuthUiState.SuccessAuthorization("Успешный вход!"))
+                if (user == null) {
+                    _uiState.emit(
+                        AuthUiState.Error("Ошибка авторизации")
+                    )
+                } else {
+                    _uiState.emit(AuthUiState.SuccessAuthorization("Успешный вход!"))
+                }
             }
         }
     }
@@ -46,17 +53,5 @@ class AuthViewModel(
 
     override fun onBackPressed() {
         navigator.goBack()
-    }
-
-    override fun selectLogin() {
-        viewModelScope.launch {
-            _uiState.emit(AuthUiState.Authorization)
-        }
-    }
-
-    override fun selectRegister() {
-        viewModelScope.launch {
-            _uiState.emit(AuthUiState.Registration)
-        }
     }
 }

@@ -10,25 +10,22 @@ import kotlinx.serialization.Serializable
  */
 
 @Serializable
-sealed class RequestsDto
+data class CreateUserDto(val userName: String, val password: String)
 
 @Serializable
-data class CreateUserDto(val email: String, val password: String) : RequestsDto()
-
-@Serializable
-sealed class ResponsesDto
+data class UserByTokenRequest(val token: String, val userName: String)
 
 @Serializable
 data class UserDto(
-    val id: String,
-    val firstName: String,
-    val lastName: String,
-    val age: Double,
+    val userName: String, //тут login
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val age: Double? = null,
     val factAge: Double? = null,
     val currentLevel: Int = 1,
     val successRate: Int? = null,
     val tryingTimes: Int? = null,
-) : ResponsesDto()
+)
 
 @Serializable
 data class AuthResponse(
@@ -39,6 +36,6 @@ data class AuthResponse(
 
 @Serializable
 data class AuthRequest(
-    val username: String,
+    val userName: String,
     val password: String
 )

@@ -5,10 +5,10 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
-    suspend fun getUserByToken(token: String): User?
+    suspend fun getUserByToken(): User?
 
-    suspend fun registerUser(email: String, pass: String): String
-    suspend fun authorizeUser(email: String, pass: String): String
+    suspend fun registerUser(email: String, pass: String): String?
+    suspend fun authorizeUser(email: String, pass: String): Boolean
 
-    fun fillUser(): Flow<User>
+    suspend fun fillUser(userData: User): User?
 }
