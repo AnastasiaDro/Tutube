@@ -9,6 +9,7 @@ kotlin {
     androidLibrary {
         namespace = "com.cerebus.auth"
         compileSdk = 36
+        minSdk = 29
     }
     val xcfName = "authKit"
 
@@ -49,6 +50,8 @@ kotlin {
             implementation(compose.uiTooling)
             //TODO Надо ли?
             implementation(libs.koin.android.compose)
+            implementation(libs.androidx.credentials.core)
+            implementation(libs.androidx.credentials.compat)
         }
 
         iosMain.dependencies {
