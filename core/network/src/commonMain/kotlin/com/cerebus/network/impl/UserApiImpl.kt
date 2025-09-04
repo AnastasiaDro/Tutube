@@ -84,7 +84,7 @@ class UserApiImpl(
 
 
     companion object {
-        private const val BASE_URL = "http://84.201.150.195:8085/api"
+        private const val BASE_URL = "http://158.160.188.163:8085/api"
         private const val AUTH_HEADER = "Authorization"
         private const val AUTH_BEARER = "Bearer"
     }

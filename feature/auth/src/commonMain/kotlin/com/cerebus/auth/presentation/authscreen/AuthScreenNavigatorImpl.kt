@@ -6,4 +6,8 @@ class AuthScreenNavigatorImpl(private val navController: NavHostController) : Au
     override fun goBack() {
         navController.navigateUp()
     }
+
+    override fun goTlUserData() {
+
+    }
 }

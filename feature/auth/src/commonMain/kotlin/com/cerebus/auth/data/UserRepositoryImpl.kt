@@ -6,9 +6,23 @@ import com.cerebus.auth.domain.repository.UserRepository
 import com.cerebus.network.userData.CreateUserDto
 import com.cerebus.network.userData.UserDto
 
+/**
+ * [UserRepositoryImpl] реализует [UserRepository]
+ * класс для работы с данными авторизации
+ * @author Anastasia Drogunova
+ * @since 01.09.2025
+ */
 class UserRepositoryImpl(private val storage: UserStorage) : UserRepository {
     private var userName = "aaa@test.ru"
-    private var token: String? = ""
+        set(value) {
+            println("Настя присвоен userName = $value")
+            field = value
+        }
+    private var token: String? = null
+        set(value) {
+            println("Настя присвоен token = $value")
+            field = value
+        }
 
     override suspend fun getUserByToken(): User? {
         val data = token?.let { t -> storage.getUserByToken(t, userName) }
@@ -28,6 +42,7 @@ class UserRepositoryImpl(private val storage: UserStorage) : UserRepository {
         email: String,
         pass: String
     ): Boolean {
+        userName = email
         token = storage.loginUser(email, pass)
         return !token.isNullOrBlank()
     }

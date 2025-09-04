@@ -54,7 +54,7 @@ kotlin {
             implementation(libs.compose.back)
             implementation(project(":core:network"))
             implementation(project(":feature:auth"))
-
+            implementation(project(":feature:profile"))
         }
 
         androidMain.dependencies {
