@@ -13,14 +13,14 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
 import com.cerebus.auth.creds.AccountManager
 import com.cerebus.auth.creds.SignInResult
-import com.cerebus.auth.creds.SignUpResult
+import com.cerebus.auth.creds.CredentialsSignUpResult
 
 class AccountManagerAndroidImpl(
     private val context: Context
 ) : AccountManager {
     private val credsManager = CredentialManager.create(context)
 
-    override suspend fun signUp(userName: String, password: String): SignUpResult {
+    override suspend fun signUp(userName: String, password: String): CredentialsSignUpResult {
         return try {
             credsManager.createCredential(
                 context = context,
@@ -29,13 +29,13 @@ class AccountManagerAndroidImpl(
                     password = password
                 )
             )
-            SignUpResult.Success(userName)
+            CredentialsSignUpResult.Success(userName)
         } catch (e: CreateCredentialCancellationException) {
             e.printStackTrace()
-            SignUpResult.Cancelled
+            CredentialsSignUpResult.Cancelled
         } catch (e: CreateCredentialException) {
             e.printStackTrace()
-            SignUpResult.Failure
+            CredentialsSignUpResult.Failure
         }
     }
 

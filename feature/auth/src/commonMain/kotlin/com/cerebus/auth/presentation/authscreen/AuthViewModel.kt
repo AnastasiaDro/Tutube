@@ -51,6 +51,10 @@ class AuthViewModel(
         }
     }
 
+    override fun onCheckCreds() {
+        TODO("Not yet implemented")
+    }
+
     override fun onBackPressed() {
         navigator.goBack()
     }

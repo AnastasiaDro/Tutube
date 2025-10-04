@@ -1,14 +1,18 @@
 package com.cerebus.auth.domain.usecases
 
+import com.cerebus.auth.creds.AccountManager
 import com.cerebus.auth.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class RegisterUserUseCase(private val userRepository: UserRepository) {
+class RegisterUserUseCase(private val userRepository: UserRepository, private val accountManager: AccountManager) {
     fun execute(login: String, pass: String): Flow<Boolean> = flow {
+
         val token = userRepository.registerUser(login, pass)
         val result = token != null && token.isNotBlank()
          //сохранить токен
+        if (result) accountManager.signUp(login, pass)
+
         emit(result)
     }
 }

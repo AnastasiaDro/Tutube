@@ -120,6 +120,10 @@ public fun AuthScreen(state: AuthUiState, interactions: AuthInteractions) {
 @Composable
 fun AuthFields(interactions: AuthInteractions) {
 
+    //проверить, есть ли сохраненные креды
+    //если есть, то предложить их сразу юзеру
+    //если нет, то ждать ввода и после нажатия войти или регистрация - предложить ввод
+
     Box(modifier = Modifier
         .fillMaxSize()
         .windowInsetsPadding(WindowInsets.safeDrawing),

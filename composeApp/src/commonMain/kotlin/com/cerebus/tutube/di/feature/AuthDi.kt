@@ -28,7 +28,7 @@ val authModule = module {
         AuthorizeUserUseCase(userRepository = get())
     }
     factory<RegisterUserUseCase> {
-        RegisterUserUseCase(userRepository = get())
+        RegisterUserUseCase(userRepository = get(), accountManager = get())
     }
 
     /** Data **/
