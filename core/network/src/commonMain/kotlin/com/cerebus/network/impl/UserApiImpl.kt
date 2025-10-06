@@ -27,28 +27,32 @@ class UserApiImpl(
 
     //кладу userName в api/users/кладу сюда userName и в header кладу бэрор токен
     override suspend fun getUserByToken(token: String, userName: String): UserDto? {
-        try {
-            return client.get("$BASE_URL/$token"){
+        return try {
+            val res: UserDto? = client.get("$BASE_URL/$token"){
                 contentType(ContentType.Application.Json)
                 header(AUTH_HEADER, "$AUTH_BEARER $token")
                 setBody(mapOf("userName" to userName))
             }.body()
+            logger.d(moduleTag = "AUTH", tag = TAG, message = { "received UserDto = $res" } )
+            res
         } catch (e: Exception) {
             logger.w(e, "AUTH", TAG) { "error in getUser!!!" }
-            return null
+            null
         }
     }
 
 
     override suspend fun registerUser(createUserData: CreateUserDto): AuthResponse? {
         return try {
-            client.post("$BASE_URL/auth/register") {
+            val res: AuthResponse? = client.post("$BASE_URL/auth/register") {
                 contentType(ContentType.Application.Json)
                 setBody(createUserData)
             }.body()
+            logger.d(moduleTag = "AUTH", tag = TAG, message = { "registered user AuthResponse = $res" } )
+            res
         } catch (e: Exception) {
             logger.w(e, "AUTH", TAG) { "error in registerUser!!!" }
-            return null
+            null
         }
     }
 
