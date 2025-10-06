@@ -6,6 +6,7 @@ import com.cerebus.network.userData.AuthRequest
 import com.cerebus.network.userData.AuthResponse
 import com.cerebus.network.userData.CreateUserDto
 import com.cerebus.network.userData.UserDto
+import com.cerebus.utils.api.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
@@ -27,18 +28,15 @@ class UserApiImpl(
     //кладу userName в api/users/кладу сюда userName и в header кладу бэрор токен
     override suspend fun getUserByToken(token: String, userName: String): UserDto? {
         try {
-            val test = client.get("$BASE_URL/$token"){
+            return client.get("$BASE_URL/$token"){
                 contentType(ContentType.Application.Json)
                 header(AUTH_HEADER, "$AUTH_BEARER $token")
                 setBody(mapOf("userName" to userName))
-            }.bodyAsText()
-            println("Настя получила юзера: $test")
-            return null
+            }.body()
         } catch (e: Exception) {
-            println(e.message)
+            logger.w(e, "AUTH", TAG) { "error in getUser!!!" }
             return null
         }
-        //уже созданный userNAme!! обязательное поле
     }
 
 
@@ -49,7 +47,7 @@ class UserApiImpl(
                 setBody(createUserData)
             }.body()
         } catch (e: Exception) {
-         //TODO
+            logger.w(e, "AUTH", TAG) { "error in registerUser!!!" }
             return null
         }
     }
@@ -63,7 +61,7 @@ class UserApiImpl(
                 setBody(userData)
             }.body()
         } catch (e: Exception) {
-            println("$TAG fillUser with Exception!!! ${e.message}")
+            logger.w(e, "AUTH", TAG) { "fillUser with Exception!!!" }
             null
         }
     }
@@ -78,7 +76,7 @@ class UserApiImpl(
                 setBody(AuthRequest(login, pass))
             }.body()
         } catch (e: Exception) {
-            e.printStackTrace()
+            logger.w(e, "AUTH", TAG) { "error in loginUser!!!" }
             null
         }
     }
@@ -87,7 +85,7 @@ class UserApiImpl(
     companion object {
         //51.250.43.116
 
-        private const val TAG = "[Auth][UserApiImpl]"
+        private const val TAG = "UserApiImpl"
         private const val BASE_URL = "http://51.250.43.116:8085/api"
         private const val AUTH_HEADER = "Authorization"
         private const val AUTH_BEARER = "Bearer"

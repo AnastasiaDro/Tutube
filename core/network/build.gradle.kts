@@ -34,6 +34,7 @@ kotlin {
             implementation(libs.ktor.client.logging)
             implementation(libs.coil.network.ktor)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(project(":core:utils"))
         }
 
 

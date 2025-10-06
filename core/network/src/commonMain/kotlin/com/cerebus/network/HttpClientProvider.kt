@@ -1,5 +1,6 @@
 package com.cerebus.network
 
+import com.cerebus.utils.api.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.plugins.HttpResponseValidator
@@ -30,8 +31,7 @@ fun HttpClientConfig<*>.applyDefaultConfig() {
     }
     HttpResponseValidator {
         handleResponseExceptionWithRequest { cause, _ ->
-            // например, если 4xx/5xx
-            println("Error: $cause")
+            logger.e(cause, "[HttpClientProvider]", "") { "Error in HttpResponseValidator" }
         }
     }
 }
