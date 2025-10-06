@@ -23,6 +23,7 @@ class UserApiImpl(
     clientProvider: HttpClientProvider,
 ) : UserApi {
     private val client: HttpClient = clientProvider.getClient()
+
     //кладу userName в api/users/кладу сюда userName и в header кладу бэрор токен
     override suspend fun getUserByToken(token: String, userName: String): UserDto? {
         try {
@@ -48,7 +49,7 @@ class UserApiImpl(
                 setBody(createUserData)
             }.body()
         } catch (e: Exception) {
-            println("Ошибка при регистрации: ${e.message}")
+         //TODO
             return null
         }
     }
@@ -62,7 +63,7 @@ class UserApiImpl(
                 setBody(userData)
             }.body()
         } catch (e: Exception) {
-            println("Ошибка при обновлении пользователя: ${e.message}")
+            println("$TAG fillUser with Exception!!! ${e.message}")
             null
         }
     }
@@ -84,7 +85,10 @@ class UserApiImpl(
 
 
     companion object {
-        private const val BASE_URL = "http://158.160.188.163:8085/api"
+        //51.250.43.116
+
+        private const val TAG = "[Auth][UserApiImpl]"
+        private const val BASE_URL = "http://51.250.43.116:8085/api"
         private const val AUTH_HEADER = "Authorization"
         private const val AUTH_BEARER = "Bearer"
     }

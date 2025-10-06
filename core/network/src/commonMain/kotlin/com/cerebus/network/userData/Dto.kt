@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
  */
 
 @Serializable
-data class CreateUserDto(val userName: String, val password: String)
+data class CreateUserDto(val userName: String)
 
 @Serializable
 data class UserByTokenRequest(val token: String, val userName: String)

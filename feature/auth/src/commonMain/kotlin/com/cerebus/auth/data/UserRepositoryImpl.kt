@@ -29,11 +29,20 @@ class UserRepositoryImpl(private val storage: UserStorage) : UserRepository {
         return data.toUser()
     }
 
+    //TODO, пока нужен только email, на почту придет одноразовый пароль
+//    override suspend fun registerUser(
+//        email: String,
+//        pass: String
+//    ): String? {
+//        val t = storage.registerUser(CreateUserDto(email, pass))
+//        token = t
+//        return t
+//    }
+
     override suspend fun registerUser(
         email: String,
-        pass: String
     ): String? {
-        val t = storage.registerUser(CreateUserDto(email, pass))
+        val t = storage.registerUser(CreateUserDto(email))
         token = t
         return t
     }

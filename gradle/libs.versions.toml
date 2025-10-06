@@ -27,6 +27,12 @@ credentials = "1.5.0"
 
 #koin
 koin = "4.1.0"
+jetbrainsKotlinJvm = "2.2.20-RC"
+coreKtx = "1.17.0"
+junitVersion = "4.13.2"
+espressoCore = "3.7.0"
+appcompat = "1.7.1"
+material = "1.13.0"
 
 [libraries]
 
@@ -73,6 +79,11 @@ compose-icons = { module = "org.jetbrains.compose.material:material-icons-extend
 androidx-credentials-core = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
 # Optional - needed for credentials support from play services, for Android 13 and below.
 androidx-credentials-compat = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 
 [plugins]
@@ -85,3 +96,7 @@ kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", vers
 room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 buildConfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-lint = { id = "com.android.lint", version.ref = "agp" }

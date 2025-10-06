@@ -7,7 +7,10 @@ interface UserRepository {
 
     suspend fun getUserByToken(): User?
 
-    suspend fun registerUser(email: String, pass: String): String?
+    //TODO: Пока у нас на беке при регистрации нужен только email,
+    //На почту придет одноразовый пароль
+    //suspend fun registerUser(email: String, pass: String): String?
+    suspend fun registerUser(email: String): String?
     suspend fun authorizeUser(email: String, pass: String): Boolean
 
     suspend fun fillUser(userData: User): User?

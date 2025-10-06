@@ -53,6 +53,7 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.compose.back)
             implementation(project(":core:network"))
+            implementation(project(":core:utils"))
             implementation(project(":feature:auth"))
             implementation(project(":feature:profile"))
         }

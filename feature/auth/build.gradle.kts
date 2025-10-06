@@ -38,7 +38,9 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.compose.icons)
             implementation(libs.androidx.navigation.compose)
+
             implementation(project(":core:network"))
+//            implementation(project(":core:utils"))
         }
 
 

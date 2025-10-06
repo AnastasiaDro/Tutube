@@ -45,8 +45,12 @@ class AuthViewModel(
 
     override fun onRegister(login: String, pass: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            registerUserUseCase.execute(login, pass).collect {
-                _uiState.emit(AuthUiState.SuccessRegistration("Успешная регистрация!"))
+            registerUserUseCase.execute(login, pass).collect { result ->
+                if (result) {
+                    _uiState.emit(AuthUiState.SuccessRegistration("Успешная регистрация!"))
+                } else {
+                    _uiState.emit(AuthUiState.Error("Ошибка регистрации"))
+                }
             }
         }
     }
