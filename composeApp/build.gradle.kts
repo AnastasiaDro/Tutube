@@ -24,13 +24,14 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "Tutube"
+            baseName = "СomposeApp"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
+            //TODO remove compose dependencies after screens creating
             implementation(compose.runtime)
             implementation(compose.ui)
             implementation(compose.foundation)
@@ -39,20 +40,34 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.kermit)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.client.serialization)
-            implementation(libs.ktor.serialization.json)
-            implementation(libs.ktor.client.logging)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime)
             implementation(libs.androidx.navigation.compose)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.coil)
-            implementation(libs.coil.network.ktor)
             implementation(libs.multiplatformSettings)
             implementation(libs.room.runtime)
             implementation(libs.materialKolor)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.koin.compose)
+            implementation(libs.compose.back)
+            implementation(project(":core:network"))
+            implementation(project(":core:utils"))
+            implementation(project(":feature:auth"))
+            implementation(project(":feature:profile"))
+        }
+
+        androidMain.dependencies {
+            implementation(compose.uiTooling)
+            implementation(libs.androidx.activityCompose)
+            implementation(libs.kotlinx.coroutines.android)
+            implementation(libs.koin.android)
+            implementation(libs.koin.android.compose)
+        }
+
+        iosMain.dependencies {
+
         }
 
         commonTest.dependencies {
@@ -61,18 +76,6 @@ kotlin {
             implementation(compose.uiTest)
             implementation(libs.kotlinx.coroutines.test)
         }
-
-        androidMain.dependencies {
-            implementation(compose.uiTooling)
-            implementation(libs.androidx.activityCompose)
-            implementation(libs.kotlinx.coroutines.android)
-            implementation(libs.ktor.client.okhttp)
-        }
-
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-        }
-
     }
 }
 
@@ -81,7 +84,7 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 29
         targetSdk = 36
 
         applicationId = "com.cerebus.tutube.androidApp"
