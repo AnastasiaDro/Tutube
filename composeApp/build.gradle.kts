@@ -56,6 +56,7 @@ kotlin {
             implementation(project(":core:utils"))
             implementation(project(":feature:auth"))
             implementation(project(":feature:profile"))
+            implementation(project(":feature:engine"))
         }
 
         androidMain.dependencies {

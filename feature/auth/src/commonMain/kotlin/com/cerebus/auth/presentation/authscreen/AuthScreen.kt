@@ -1,5 +1,6 @@
 package com.cerebus.auth.presentation.authscreen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -157,18 +158,20 @@ fun AuthFields(interactions: AuthInteractions) {
                 value = textLogin,
                 onValueChange = { newText -> textLogin = newText },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                label = { Text("Логин") },
+                label = { Text("email") },
                 placeholder = { Text("Введите ваш email") }
             )
 
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                value = textPass,
-                onValueChange = { newText -> textPass = newText },
-                label = { Text("Пароль") },
-                placeholder = { Text("Введите пароль") }
-            )
+            AnimatedVisibility(visible = !checked) {
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    value = textPass,
+                    onValueChange = { newText -> textPass = newText },
+                    label = { Text("Пароль") },
+                    placeholder = { Text("Введите пароль") }
+                )
+            }
 
             Row(modifier = Modifier
                 .fillMaxWidth()
