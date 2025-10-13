@@ -16,7 +16,7 @@ import com.cerebus.utils.api.logger
  * @since 01.09.2025
  */
 class UserRepositoryImpl(private val storage: UserStorage) : UserRepository {
-    private var userName = "aaa@test.ru"
+    private var userName: String = "aaa@test.ru"
         set(value) {
             logger.d(moduleTag = "AUTH", tag = "userName", message = { "new USER_NAME = $value" })
             field = value

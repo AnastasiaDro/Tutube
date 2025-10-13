@@ -9,7 +9,6 @@ class AuthorizeUserUseCase(private val userRepository: UserRepository) {
 
     fun execute(login: String, pass: String): Flow<User?> = flow {
         val res = userRepository.authorizeUser(login, pass)
-        println("Настя результат авторизации $res")
         emit(res)
     }
 }

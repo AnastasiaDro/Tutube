@@ -7,6 +7,6 @@ data class User(
     val birthDate: String? = null,
     val factAge: Double? = null,
     val currentLevel: Int = 1,
-    val successRate: Int? = null,
+    val successRate: Double? = null,
     val tryingTimes: Int? = null,
 )

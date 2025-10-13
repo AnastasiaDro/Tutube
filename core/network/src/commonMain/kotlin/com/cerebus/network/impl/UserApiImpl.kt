@@ -56,7 +56,7 @@ class UserApiImpl(
 
     override suspend fun verifyUser(verifyUserDto: VerifyUserDto): Response<UserDto>? {
         return try {
-            val res: Response<UserDto> = client.post("$BASE_URL/auth/register") {
+            val res: Response<UserDto> = client.post("$BASE_URL/auth/verify") {
                 contentType(ContentType.Application.Json)
                 setBody(mapOf(
                     "email" to verifyUserDto.email,
