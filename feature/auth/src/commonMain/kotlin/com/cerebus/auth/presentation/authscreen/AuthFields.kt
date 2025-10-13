@@ -29,16 +29,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-
 
 @Composable
 fun AuthFields(authMode: AuthMode, interactions: AuthInteractions, onAuthModeChange: (newMOde: AuthMode) -> Unit) {
 
-    //проверить, есть ли сохраненные креды
-    //если есть, то предложить их сразу юзеру
-    //если нет, то ждать ввода и после нажатия войти или регистрация - предложить ввод
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    println("Настя перерисовка")
 
     Box(modifier = Modifier
         .fillMaxSize()
@@ -51,9 +51,10 @@ fun AuthFields(authMode: AuthMode, interactions: AuthInteractions, onAuthModeCha
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+
             var textLogin by remember { mutableStateOf("") }
             var textPass by remember { mutableStateOf("") }
-            //var authMode by remember { mutableStateOf(AuthMode.LOGIN) }
+
             val switchDesc = "Регистрация"
 
             val buttonText: String = when (authMode) {
@@ -62,27 +63,27 @@ fun AuthFields(authMode: AuthMode, interactions: AuthInteractions, onAuthModeCha
                 AuthMode.VERIFY -> "Подтвердить код"
             }
 
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                value = textLogin,
-                onValueChange = { newText -> textLogin = newText },
+            /** Login **/
+            AuthField(
+                onValueChange = {
+                    println("Настя onValueChange")
+                    textLogin = it
+                                },
+                label = "email",
+                placeHolderText = "Введите Ваш email",
                 enabled = authMode != AuthMode.VERIFY,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                label = { Text("email") },
-                placeholder = { Text("Введите ваш email") }
             )
 
+            /** Password **/
             AnimatedVisibility(visible = authMode != AuthMode.REGISTER) {
                 val text = if (authMode == AuthMode.VERIFY) "Введите код" else "Введите пароль"
+                val label = if (authMode == AuthMode.VERIFY) "Код" else "Пароль"
 
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    value = textPass,
-                    onValueChange = { newText -> textPass = newText },
-                    label = { Text("Пароль") },
-                    placeholder = { Text(text) }
+                AuthField(
+                    onValueChange = { textPass = it },
+                    label = label,
+                    placeHolderText = text,
                 )
             }
 
@@ -114,6 +115,7 @@ fun AuthFields(authMode: AuthMode, interactions: AuthInteractions, onAuthModeCha
                         AuthMode.REGISTER -> interactions.onRegister(textLogin)
                         AuthMode.VERIFY -> interactions.onVerify(textLogin, textPass)
                     }
+                    keyboardController?.hide()
                 },
                 content = {
                     Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null)
@@ -123,4 +125,30 @@ fun AuthFields(authMode: AuthMode, interactions: AuthInteractions, onAuthModeCha
             )
         }
     }
+}
+
+
+@Composable
+fun AuthField(
+    onValueChange: (String) -> Unit,
+    label: String,
+    placeHolderText: String,
+    enabled: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+) {
+    var textPass by remember { mutableStateOf("") }
+
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true,
+        value = textPass,
+        enabled = enabled,
+        keyboardOptions = keyboardOptions,
+        onValueChange = {
+            newText -> textPass = newText
+            onValueChange.invoke(newText)
+                        },
+        label = { Text(label) },
+        placeholder = { Text(placeHolderText) }
+    )
 }
