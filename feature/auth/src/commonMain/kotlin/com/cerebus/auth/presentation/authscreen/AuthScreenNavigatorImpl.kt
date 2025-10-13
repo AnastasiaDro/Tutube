@@ -7,7 +7,8 @@ class AuthScreenNavigatorImpl(private val navController: NavHostController) : Au
         navController.navigateUp()
     }
 
-    override fun goTlUserData() {
-
+    override fun goToUserData() {
+        //TODO
+        println("НАСТЯ goToUserData()")
     }
 }

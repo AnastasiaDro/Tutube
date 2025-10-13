@@ -50,7 +50,6 @@ class UserStorageImpl(private val userApi: UserApi) : UserStorage {
             } else {
                 StorageResponse.Error(result.message, result.errorType ?: "")
             }
-
         } ?: StorageResponse.Error("Internal Error", "Internal Error")
     }
 
@@ -65,7 +64,6 @@ class UserStorageImpl(private val userApi: UserApi) : UserStorage {
             } else {
                 StorageResponse.Error(result.message, result.errorType ?: "")
             }
-
         } ?: StorageResponse.Error("Internal Error", "Internal Error")
     }
 }

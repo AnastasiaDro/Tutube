@@ -7,6 +7,7 @@ import com.cerebus.auth.data.storage.VerifyResult
 import com.cerebus.auth.domain.models.User
 import com.cerebus.auth.domain.repository.UserRepository
 import com.cerebus.network.userData.UserDto
+import com.cerebus.utils.api.logger
 
 /**
  * [UserRepositoryImpl] реализует [UserRepository]
@@ -17,12 +18,12 @@ import com.cerebus.network.userData.UserDto
 class UserRepositoryImpl(private val storage: UserStorage) : UserRepository {
     private var userName = "aaa@test.ru"
         set(value) {
-            println("Настя присвоен userName = $value")
+            logger.d(moduleTag = "AUTH", tag = "userName", message = { "new USER_NAME = $value" })
             field = value
         }
     private var token: String? = null
         set(value) {
-            println("Настя присвоен token = $value")
+            logger.d(moduleTag = "AUTH", tag = "token", message = { "new TOKEN = $value" })
             field = value
         }
 
@@ -39,14 +40,17 @@ class UserRepositoryImpl(private val storage: UserStorage) : UserRepository {
         email: String,
     ): Boolean {
         val result = storage.registerUser(email)
-        return result is StorageResponse.Success
+        val res = result is StorageResponse.Success
+        return res
     }
 
     override suspend fun verifyUser(email: String, code: String): User? {
+        logger.d(moduleTag = "AUTH", tag = "verifyUser", message = { "email: $email, code: $code" })
         val data = storage.verifyUser(email, code)
         return if (data is StorageResponse.Success) {
             val verifyResult = data.result
             token = verifyResult?.token
+            userName = email
             verifyResult?.user.toUser()
         } else {
             null

@@ -9,15 +9,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
@@ -34,6 +30,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +39,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -68,6 +64,14 @@ public fun AuthScreenWrapper(navController: NavHostController) {
 public fun AuthScreen(state: AuthUiState, interactions: AuthInteractions) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    var authMode by remember { mutableStateOf(AuthMode.LOGIN) }
+
+    LaunchedEffect(state) {
+        authMode = when (state) {
+            is AuthUiState.VerifyEmail -> AuthMode.VERIFY
+            else -> AuthMode.LOGIN
+        }
+    }
 
     Scaffold(
         snackbarHost = {
@@ -90,15 +94,17 @@ public fun AuthScreen(state: AuthUiState, interactions: AuthInteractions) {
             )
         },
         content = {
-            AuthFields(interactions)
+            AuthFields(authMode, interactions) { newMode -> authMode = newMode }
+
             when (state) {
                 is AuthUiState.Authorization -> {  }
-                is AuthUiState.SuccessRegistration -> scope.launch {
+                is AuthUiState.VerifyEmail -> scope.launch {
                     snackbarHostState.showSnackbar(
                         message = state.message,
                         actionLabel = "OK"
                     )
                 }
+
                 is AuthUiState.SuccessAuthorization -> scope.launch {
                     snackbarHostState.showSnackbar(
                         message = state.message,
@@ -116,85 +122,4 @@ public fun AuthScreen(state: AuthUiState, interactions: AuthInteractions) {
             }
         }
     )
-}
-
-@Composable
-fun AuthFields(interactions: AuthInteractions) {
-
-    //проверить, есть ли сохраненные креды
-    //если есть, то предложить их сразу юзеру
-    //если нет, то ждать ввода и после нажатия войти или регистрация - предложить ввод
-
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .windowInsetsPadding(WindowInsets.safeDrawing),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 12.dp), // сделать скроллируемым, чтобы при необходимости подняться // ← контролирует IME через nested scroll
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            var textLogin by remember { mutableStateOf("") }
-            var textPass by remember { mutableStateOf("") }
-            var checked by remember { mutableStateOf(false) }
-            val switchDesc = "Регистрация"
-
-            val buttonText: String = if (checked) {
-                "Зарегистрироваться"
-            } else {
-                "Войти"
-            }
-
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                value = textLogin,
-                onValueChange = { newText -> textLogin = newText },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                label = { Text("email") },
-                placeholder = { Text("Введите ваш email") }
-            )
-
-            AnimatedVisibility(visible = !checked) {
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    value = textPass,
-                    onValueChange = { newText -> textPass = newText },
-                    label = { Text("Пароль") },
-                    placeholder = { Text("Введите пароль") }
-                )
-            }
-
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = switchDesc)
-                Switch(
-                    checked = checked,
-                    onCheckedChange = { checked = it }
-                )
-            }
-            ElevatedButton(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onClick = {
-                    if (checked)
-                        interactions.onRegister(textLogin)
-                    else
-                        interactions.onLogin(textLogin, textPass)
-                },
-                content = {
-                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null)
-                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(buttonText)
-                }
-            )
-        }
-    }
 }

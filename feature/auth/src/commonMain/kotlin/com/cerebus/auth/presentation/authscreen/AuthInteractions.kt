@@ -10,5 +10,7 @@ interface AuthInteractions {
 
     fun onRegister(login: String)
 
+    fun onVerify(login: String, code: String)
+
     fun onCheckCreds()
 }

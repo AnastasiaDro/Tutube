@@ -7,6 +7,7 @@ import com.cerebus.auth.domain.repository.UserRepository
 import com.cerebus.auth.domain.usecases.AuthorizeUserUseCase
 import com.cerebus.auth.domain.usecases.LoadUserUseCase
 import com.cerebus.auth.domain.usecases.RegisterUserUseCase
+import com.cerebus.auth.domain.usecases.VerifyUserUseCase
 import com.cerebus.auth.presentation.authscreen.AuthScreenNavigator
 import com.cerebus.auth.presentation.authscreen.AuthViewModel
 import  org.koin.core.module.dsl.*
@@ -21,6 +22,7 @@ val authModule = module {
             authorizeUserUseCase = get(),
             registerUserUseCase = get(),
             loadUserUseCase = get(),
+            verifyUserUseCase = get(),
         )
     }
 
@@ -31,6 +33,9 @@ val authModule = module {
     }
     factory<RegisterUserUseCase> {
         RegisterUserUseCase(userRepository = get(), accountManager = get())
+    }
+    factory<VerifyUserUseCase> {
+        VerifyUserUseCase(userRepository = get())
     }
     factory<LoadUserUseCase> {
         LoadUserUseCase(userRepository = get())
