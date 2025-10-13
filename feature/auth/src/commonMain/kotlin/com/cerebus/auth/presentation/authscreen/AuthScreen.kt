@@ -139,17 +139,12 @@ fun AuthFields(interactions: AuthInteractions) {
             var textLogin by remember { mutableStateOf("") }
             var textPass by remember { mutableStateOf("") }
             var checked by remember { mutableStateOf(false) }
-
-            val buttonAction: (String, String) -> Unit
-            val buttonText: String
             val switchDesc = "Регистрация"
 
-            if (checked) {
-                buttonAction = interactions::onRegister
-                buttonText = "Зарегистрироваться"
+            val buttonText: String = if (checked) {
+                "Зарегистрироваться"
             } else {
-                buttonAction = interactions::onLogin
-                buttonText = "Войти"
+                "Войти"
             }
 
             OutlinedTextField(
@@ -188,7 +183,12 @@ fun AuthFields(interactions: AuthInteractions) {
             ElevatedButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = { buttonAction.invoke(textLogin, textPass) },
+                onClick = {
+                    if (checked)
+                        interactions.onRegister(textLogin)
+                    else
+                        interactions.onLogin(textLogin, textPass)
+                },
                 content = {
                     Icon(Icons.AutoMirrored.Filled.Send, contentDescription = null)
                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))

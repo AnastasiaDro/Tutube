@@ -2,10 +2,12 @@ package com.cerebus.network.impl
 
 import com.cerebus.network.HttpClientProvider
 import com.cerebus.network.api.UserApi
-import com.cerebus.network.userData.AuthRequest
-import com.cerebus.network.userData.AuthResponse
-import com.cerebus.network.userData.CreateUserDto
+import com.cerebus.network.userData.AuthUserDto
+import com.cerebus.network.userData.GetUserDto
+import com.cerebus.network.userData.RegisterUserDto
+import com.cerebus.network.userData.Response
 import com.cerebus.network.userData.UserDto
+import com.cerebus.network.userData.VerifyUserDto
 import com.cerebus.utils.api.logger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -14,24 +16,21 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
-import kotlinx.coroutines.delay
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 
 class UserApiImpl(
     clientProvider: HttpClientProvider,
 ) : UserApi {
     private val client: HttpClient = clientProvider.getClient()
 
-    //кладу userName в api/users/кладу сюда userName и в header кладу бэрор токен
-    override suspend fun getUserByToken(token: String, userName: String): UserDto? {
+    override suspend fun getUserByToken(token: String, getUserDto: GetUserDto): Response<UserDto>? {
         return try {
-            val res: UserDto? = client.get("$BASE_URL/$token"){
+            val res: Response<UserDto> = client.get("$BASE_URL/$token"){
                 contentType(ContentType.Application.Json)
                 header(AUTH_HEADER, "$AUTH_BEARER $token")
-                setBody(mapOf("userName" to userName))
+                setBody(mapOf("userName" to getUserDto.userName))
             }.body()
             logger.d(moduleTag = "AUTH", tag = TAG, message = { "received UserDto = $res" } )
             res
@@ -41,14 +40,13 @@ class UserApiImpl(
         }
     }
 
-
-    override suspend fun registerUser(createUserData: CreateUserDto): AuthResponse? {
+    override suspend fun registerUser(registerUserDto: RegisterUserDto): Response<Unit>? {
         return try {
-            val res: AuthResponse? = client.post("$BASE_URL/auth/register") {
+            val res: Response<Unit> = client.post("$BASE_URL/auth/register") {
                 contentType(ContentType.Application.Json)
-                setBody(createUserData)
+                setBody(mapOf("userName" to registerUserDto.userName))
             }.body()
-            logger.d(moduleTag = "AUTH", tag = TAG, message = { "registered user AuthResponse = $res" } )
+            logger.d(moduleTag = "AUTH", tag = TAG, message = { "registered user Response = $res" } )
             res
         } catch (e: Exception) {
             logger.w(e, "AUTH", TAG) { "error in registerUser!!!" }
@@ -56,8 +54,23 @@ class UserApiImpl(
         }
     }
 
+    override suspend fun verifyUser(verifyUserDto: VerifyUserDto): Response<UserDto>? {
+        return try {
+            val res: Response<UserDto> = client.post("$BASE_URL/auth/register") {
+                contentType(ContentType.Application.Json)
+                setBody(mapOf(
+                    "email" to verifyUserDto.email,
+                    "code" to verifyUserDto.code))
+            }.body()
+            logger.d(moduleTag = "AUTH", tag = TAG, message = { "verifyUser user Response = $res" } )
+            res
+        } catch (e: Exception) {
+            logger.w(e, "AUTH", TAG) { "error in verifyUser!!!" }
+            null
+        }
+    }
 
-    override suspend fun fillUser(token: String, userData: UserDto): UserDto? {
+    override suspend fun updateUser(token: String, userData: UserDto): Response<UserDto>? {
         return try {
             return client.put("$BASE_URL/users") {
                 contentType(ContentType.Application.Json)
@@ -70,14 +83,11 @@ class UserApiImpl(
         }
     }
 
-    override suspend fun loginUser(
-        login: String,
-        pass: String
-    ): AuthResponse? {
+    override suspend fun loginUser(authUserDto: AuthUserDto): Response<UserDto>? {
         return try {
             return client.post("$BASE_URL/auth/login") {
                 contentType(ContentType.Application.Json)
-                setBody(AuthRequest(login, pass))
+                setBody(AuthUserDto(authUserDto.userName, authUserDto.password))
             }.body()
         } catch (e: Exception) {
             logger.w(e, "AUTH", TAG) { "error in loginUser!!!" }
@@ -85,12 +95,11 @@ class UserApiImpl(
         }
     }
 
-
     companion object {
-        //51.250.43.116
+        //158.160.151.235
 
         private const val TAG = "UserApiImpl"
-        private const val BASE_URL = "http://51.250.43.116:8085/api"
+        private const val BASE_URL = "http://158.160.151.235:8085/api"
         private const val AUTH_HEADER = "Authorization"
         private const val AUTH_BEARER = "Bearer"
     }

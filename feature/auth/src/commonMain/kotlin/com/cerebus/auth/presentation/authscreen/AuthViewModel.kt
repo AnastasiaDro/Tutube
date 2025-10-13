@@ -3,6 +3,7 @@ package com.cerebus.auth.presentation.authscreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cerebus.auth.domain.usecases.AuthorizeUserUseCase
+import com.cerebus.auth.domain.usecases.LoadUserUseCase
 import com.cerebus.auth.domain.usecases.RegisterUserUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -16,6 +17,7 @@ class AuthViewModel(
     private val navigator: AuthScreenNavigator,
     private val authorizeUserUseCase: AuthorizeUserUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
+    private val loadUserUseCase: LoadUserUseCase,
 ) : ViewModel(), AuthInteractions {
 
     private val _uiState = MutableStateFlow<AuthUiState>(AuthUiState.Authorization)
@@ -23,8 +25,9 @@ class AuthViewModel(
 
     override fun loadUser() {
         viewModelScope.launch {
-            delay(1000)
-            _uiState.emit(AuthUiState.Error("Tmp error"))
+            loadUserUseCase.execute().collect { user ->
+                println("Настя user = $user загружен")
+            }
         }
     }
 
@@ -33,9 +36,7 @@ class AuthViewModel(
             authorizeUserUseCase.execute(login, pass).collect { user ->
                 //TODO обработка пустого user-а
                 if (user == null) {
-                    _uiState.emit(
-                        AuthUiState.Error("Ошибка авторизации")
-                    )
+                    _uiState.emit(AuthUiState.Error("Ошибка авторизации"))
                 } else {
                     _uiState.emit(AuthUiState.SuccessAuthorization("Успешный вход!"))
                 }
@@ -43,9 +44,9 @@ class AuthViewModel(
         }
     }
 
-    override fun onRegister(login: String, pass: String) {
+    override fun onRegister(login: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            registerUserUseCase.execute(login, pass).collect { result ->
+            registerUserUseCase.execute(login).collect { result ->
                 if (result) {
                     _uiState.emit(AuthUiState.SuccessRegistration("Успешная регистрация!"))
                 } else {

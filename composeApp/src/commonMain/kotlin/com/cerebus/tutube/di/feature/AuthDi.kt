@@ -5,6 +5,7 @@ import com.cerebus.auth.data.storage.UserStorage
 import com.cerebus.auth.data.storage.UserStorageImpl
 import com.cerebus.auth.domain.repository.UserRepository
 import com.cerebus.auth.domain.usecases.AuthorizeUserUseCase
+import com.cerebus.auth.domain.usecases.LoadUserUseCase
 import com.cerebus.auth.domain.usecases.RegisterUserUseCase
 import com.cerebus.auth.presentation.authscreen.AuthScreenNavigator
 import com.cerebus.auth.presentation.authscreen.AuthViewModel
@@ -19,6 +20,7 @@ val authModule = module {
             navigator = navigator,
             authorizeUserUseCase = get(),
             registerUserUseCase = get(),
+            loadUserUseCase = get(),
         )
     }
 
@@ -29,6 +31,9 @@ val authModule = module {
     }
     factory<RegisterUserUseCase> {
         RegisterUserUseCase(userRepository = get(), accountManager = get())
+    }
+    factory<LoadUserUseCase> {
+        LoadUserUseCase(userRepository = get())
     }
 
     /** Data **/
