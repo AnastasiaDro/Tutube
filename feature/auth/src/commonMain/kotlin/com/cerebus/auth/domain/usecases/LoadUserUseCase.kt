@@ -8,7 +8,13 @@ import kotlinx.coroutines.flow.flow
 class LoadUserUseCase(private val userRepository: UserRepository) {
 
     fun execute(): Flow<User?> = flow {
-        val user = userRepository.getUserByToken()
-        emit(user)
+        //TODO Переделать
+        val email = userRepository.getUserName()
+        val token = userRepository.getToken()
+
+        if (email != null && token != null) {
+            val user = userRepository.getUserByToken(email, token)
+            emit(user)
+        }
     }
 }

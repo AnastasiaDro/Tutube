@@ -4,7 +4,11 @@ import com.cerebus.auth.domain.models.User
 
 interface UserRepository {
 
-    suspend fun getUserByToken(): User?
+    fun getUserName(): String?
+
+    fun getToken(): String?
+
+    suspend fun getUserByToken(email: String, token: String): User?
 
     //TODO: Пока у нас на беке при регистрации нужен только email,
     //На почту придет одноразовый пароль

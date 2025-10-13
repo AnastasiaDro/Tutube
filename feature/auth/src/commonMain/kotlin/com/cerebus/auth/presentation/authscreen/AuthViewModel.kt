@@ -27,7 +27,7 @@ class AuthViewModel(
     override fun loadUser() {
         viewModelScope.launch {
             loadUserUseCase.execute().collect { user ->
-                println("Настя user = $user загружен")
+                navigator.goToUserData()
             }
         }
     }

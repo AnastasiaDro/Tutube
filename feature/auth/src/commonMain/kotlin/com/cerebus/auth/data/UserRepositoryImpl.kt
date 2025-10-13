@@ -21,13 +21,19 @@ class UserRepositoryImpl(private val storage: UserStorage) : UserRepository {
             logger.d(moduleTag = "AUTH", tag = "userName", message = { "new USER_NAME = $value" })
             field = value
         }
+
+    override fun getUserName() = userName
+
     private var token: String? = null
         set(value) {
             logger.d(moduleTag = "AUTH", tag = "token", message = { "new TOKEN = $value" })
             field = value
         }
+    override fun getToken() = token
 
-    override suspend fun getUserByToken(): User? {
+
+
+    override suspend fun getUserByToken(email: String, token: String): User? {
         val data = token?.let { t -> storage.getUserByToken(t, userName) }
         return if (data is StorageResponse.Success) {
            data.result.toUser()
